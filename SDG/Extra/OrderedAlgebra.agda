@@ -22,4 +22,6 @@ record OrderedCommutativeRing c ℓ : Set (suc (c ⊔ ℓ)) where
     -_ : Op₁ Carrier
     0# : Carrier
     1# : Carrier
-    isOrderedCommutativeRing : IsOrderedCommutativeRing _≈_ _<_ _+_ _*_ -_ 1# 0#
+    isOrderedCommutativeRing : IsOrderedCommutativeRing _≈_ _<_ _+_ _*_ -_ 0# 1#
+
+  open IsOrderedCommutativeRing isOrderedCommutativeRing public

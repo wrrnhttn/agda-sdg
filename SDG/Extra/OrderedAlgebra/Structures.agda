@@ -21,5 +21,5 @@ record IsOrderedCommutativeRing
     <-* : ∀ (a b) → 0# < a → 0# < b → 0# < (a * b)
 
   open IsCommutativeRing isCommutativeRing public
-    using (zero)
+    --using (zero)
   open IsStrictTotalOrder <-isStrictTotalOrder public

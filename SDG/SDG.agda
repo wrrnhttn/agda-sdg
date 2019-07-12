@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K --safe #-}
+{-# OPTIONS --without-K #-}
 
 open import SDG.Extra.OrderedAlgebra
 
@@ -9,6 +9,8 @@ open OrderedCommutativeRing R renaming (Carrier to Rc)
 open import Data.Product
 open import Data.Sum
 
+open import Algebra
+
 -- note: SDG should probably be a record if i need to
 --       use some particular topos model
 
@@ -16,9 +18,9 @@ open import Data.Sum
 nilsqr = λ x → (x * x) ≈ 0#
 
 nilsqr-0# : nilsqr 0#
-nilsqr-0# = {!!}
+nilsqr-0# = zeroˡ 0#
 
-D : {!!}
+--D : {!!}
 D = Σ[ x ∈ Rc ] (nilsqr x)
 
 D→R : D → Rc
