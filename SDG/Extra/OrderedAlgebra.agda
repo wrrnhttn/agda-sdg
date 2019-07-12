@@ -10,8 +10,8 @@ open import SDG.Extra.OrderedAlgebra.Structures
 
 record OrderedCommutativeRing c ℓ : Set (suc (c ⊔ ℓ)) where
   infix 8 -_
-  infix 7 _*_
-  infix 6 _+_
+  infixl 7 _*_
+  infixl 6 _+_
   infix 4 _≈_
   field
     Carrier : Set c
