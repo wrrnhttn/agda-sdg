@@ -65,11 +65,11 @@ open import Algebra.FunctionProperties
 -- lemma : ∀ (f : Op₂ Rc) → Congruent₂ f
 -- lemma = ?
 
-lemma : ∀ (f : Op₁ Rc) (x : Rc) → f (x + 0#) ≈ f x
-lemma f x = {!!} -- how do i do this?!!!
+-- lemma : ∀ (f : Op₁ Rc) (x : Rc) → f (x + 0#) ≈ f x
+-- lemma f x = {!!} -- how do i do this?!!!
 
-lemma′ : ∀ (f : Rc → Rc) (x : Rc) → gₓ f x d0 ≈ f x
-lemma′ f x = {!!}
+-- lemma′ : ∀ (f : Rc → Rc) (x : Rc) → gₓ f x d0 ≈ f x
+-- lemma′ f x = {!!}
 
 --open import Function _≈_ _≈_ public
 
