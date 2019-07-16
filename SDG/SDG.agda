@@ -68,12 +68,22 @@ open import Algebra.FunctionProperties
 lemma : ∀ (f : Op₁ Rc) (x : Rc) → f (x + 0#) ≈ f x
 lemma f x = {!!} -- how do i do this?!!!
 
---open import Function.Congruent _≈_ _≈_ public
+lemma′ : ∀ (f : Rc → Rc) (x : Rc) → gₓ f x d0 ≈ f x
+lemma′ f x = {!!}
+
+--open import Function _≈_ _≈_ public
+
+open import Function.Equality
+open import Function.Endomorphism.Setoid
 
 --blah : ∀ (f : Rc → Rc) → Congruent f
 
-≈-cong : ∀ (f : Rc → Rc) {x y} → x ≈ y → f x ≈ f y
-≈-cong f x≈y = {!!}
+--blah :  ∀ {x y : Rc} (f : Rc ⟶ Rc) → x ≈ y → f x ≈ f y
+-- https://groupprops.subwiki.org/wiki/Congruence_on_an_algebra
+postulate -- IS THIS NECESSARY? BAD!!!
+  ≈-cong : ∀ (f : Rc → Rc) {x y : Rc} → x ≈ y → f x ≈ f y
+--≈-cong f {x} {y} x≈y = {!begin f x ≈⟨ f (begin ?) ⟩ ? ∎!}
+
 
 -- "the fundamental equation of the differential calculus in 𝕊" (bell)
 -- aka taylor's formula
@@ -82,7 +92,7 @@ taylors f x d = begin
     f (x + D→R d)                   ≈⟨ refl ⟩
     gₓ f x d                        ≈⟨ bprop d ⟩
     (gₓ f x d0) + (D→R d * (f ′) x) ≈⟨ refl ⟩
-    f (x + 0#) + (D→R d * (f ′) x)  ≈⟨ +-congʳ $ {!!} ⟩
+    f (x + 0#) + (D→R d * (f ′) x)  ≈⟨ +-congʳ $ ≈-cong f $ +-identityʳ _ ⟩
     f x + (D→R d * (f ′) x)         ∎
   where
     bprop = proj₁ (proj₂ (∃!b f x))
@@ -100,19 +110,23 @@ sum-rule f g x =
     ((f ′) ⊞ (g ′)) x ∎
   where
    gg : D → Rc
-   gg = λ e → (f ⊞ g) (x + D→R e)
+   gg = λ d → (f ⊞ g) (x + D→R d)
    b = proj₁ (kock-lawvere gg)
-   unique : ∀ {y} → (∀ (e : D) → gg e ≈ (gg d0) + ((D→R e) * y)) → b ≈ y
+   unique : ∀ {y} → (∀ (d : D) → gg d ≈ (gg d0) + ((D→R d) * y)) → b ≈ y
    unique = proj₂ (proj₂ (kock-lawvere gg))
    ggf′+g′ : ∀ (d : D) → gg d ≈ (gg d0) + ((D→R d) * (((f ′) ⊞ (g ′)) x))
    ggf′+g′ d =
      begin 
        (f (x + D→R d)) + (g (x + D→R d))           ≈⟨ +-congʳ $ taylors f x d ⟩ 
        (f x + (D→R d * (f ′) x)) + (g (x + D→R d)) ≈⟨  +-congˡ $ taylors g x d ⟩ 
-       (f x + (D→R d * (f ′) x)) + (g x + (D→R d * (g ′) x)) ≈⟨ {!!} ⟩ 
+       (f x + (D→R d * (f ′) x)) + (g x + (D→R d * (g ′) x)) ≈⟨ +-assoc _ _ _ ⟩
+       f x + ((D→R d * (f ′) x) + (g x + (D→R d * (g ′) x))) ≈⟨ +-congˡ $ sym $ +-assoc _ _ _ ⟩
+       f x + (((D→R d * (f ′) x) + g x) + (D→R d * (g ′) x)) ≈⟨ +-congˡ $ +-congʳ $ +-comm _ _ ⟩
+       f x + ((g x + (D→R d * (f ′) x)) + (D→R d * (g ′) x)) ≈⟨ +-congˡ $ +-assoc _ _ _ ⟩
+       f x + (g x + ((D→R d * (f ′) x) + (D→R d * (g ′) x))) ≈⟨ sym $ +-assoc _ _ _ ⟩
        (f x + g x) + ((D→R d * (f ′) x) + (D→R d * (g ′) x)) ≈⟨ +-congˡ $ sym $ distribˡ _ _ _ ⟩
        (f x + g x) + D→R d * ((f ′) x + (g ′) x) ≈⟨ refl ⟩
-       (f ⊞ g) x + D→R d * ((f ′) ⊞ (g ′)) x  ≈⟨ {!!} ⟩
+       (f ⊞ g) x + D→R d * ((f ′) ⊞ (g ′)) x  ≈⟨ +-congʳ $ ≈-cong (f ⊞ g) $ sym $ +-identityʳ _  ⟩
        gg d0 + D→R d * ((f ′) ⊞ (g ′)) x ∎
    b≈ggf′+g′ : b ≈ ((f ′) ⊞ (g ′)) x
    b≈ggf′+g′ = unique ggf′+g′
