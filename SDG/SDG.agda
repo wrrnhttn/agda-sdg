@@ -33,6 +33,9 @@ D→R d = proj₁ d
 R→D : (x : Rc) → nilsqr x → D
 R→D x nilsqr = x , nilsqr
 
+-- blah : (d : D) → D→R d * D→R d ≈ 0#
+-- blah d = proj₂ d
+
 d0 : D
 d0 = R→D 0# nilsqr-0#
 
@@ -131,3 +134,35 @@ sum-rule f g x =
    b≈ggf′+g′ : b ≈ ((f ′) ⊞ (g ′)) x
    b≈ggf′+g′ = unique ggf′+g′
    
+_⊡_ : (f : Rc → Rc) → (g : Rc → Rc) → (Rc → Rc)
+f ⊡ g = λ x → f x * g x
+
+open import Algebra.Solver.Ring
+
+product-rule : ∀ (f g : Rc → Rc) (x : Rc) → ((f ⊡ g) ′) x ≈ (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x
+product-rule f g x =
+  begin 
+    ((f ⊡ g) ′) x ≈⟨ refl ⟩
+    b ≈⟨ G ⟩
+    (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x ∎
+  where
+    gg = λ d → (f ⊡ g) (x + D→R d)
+    b = proj₁ (kock-lawvere gg)
+    unique : ∀ {y} → (∀ (d : D) → gg d ≈ (gg d0) + ((D→R d) * y)) → b ≈ y
+    unique = proj₂ (proj₂ (kock-lawvere gg))
+    H : ∀ (d : D) → gg d ≈ (gg d0) + ((D→R d) * ((((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x))
+    H d =
+      begin 
+        (f ⊡ g) (x + D→R d) ≈⟨ refl ⟩ 
+        (f (x + D→R d)) * (g (x + D→R d))                     ≈⟨ *-congʳ $ taylors f x d ⟩
+        (f x + D→R d * (f ′) x) * (g (x + D→R d))           ≈⟨ *-congˡ $ taylors g x d ⟩
+        (f x + D→R d * (f ′) x) * (g x + (D→R d) * (g ′) x) ≈⟨ {!!} ⟩  -- use solver here?
+        (f ⊡ g) x + D→R d * (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x
+          + ((D→R d) * (D→R d)) * ((f ′) x * (g ′) x)        ≈⟨ +-congˡ $ *-congʳ $ proj₂ d ⟩
+        (f ⊡ g) x + D→R d * (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x
+          + 0# * ((f ′) x * (g ′) x)                         ≈⟨ +-congˡ $ zeroˡ _ ⟩
+        (f ⊡ g) x + D→R d * (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x + 0#    ≈⟨ +-identityʳ _ ⟩
+        (f ⊡ g) x + D→R d * (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x ≈⟨ {!!} ⟩
+        gg d0 + D→R d * (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x ∎ 
+    G : b ≈ (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x
+    G = unique H
