@@ -156,19 +156,24 @@ product-rule f g x =
         (f ⊡ g) (x + D→R d) ≈⟨ refl ⟩ 
         (f (x + D→R d)) * (g (x + D→R d))                     ≈⟨ *-congʳ $ taylors f x d ⟩
         (f x + D→R d * (f ′) x) * (g (x + D→R d))           ≈⟨ *-congˡ $ taylors g x d ⟩
-        (f x + D→R d * (f ′) x) * (g x + D→R d * (g ′) x) ≈⟨ {!!} ⟩  -- maybe use solver here?
+        (f x + D→R d * (f ′) x) * (g x + D→R d * (g ′) x) ≈⟨ distribˡ _ _ _ ⟩  -- maybe use solver here?
         (f x + D→R d * (f ′) x) * g x + (f x + D→R d * (f ′) x) * (D→R d * (g ′) x) ≈⟨ +-congʳ $ distribʳ _ _ _ ⟩
         (f x * g x + D→R d * (f ′) x * g x) + (f x + D→R d * (f ′) x) * (D→R d * (g ′) x) ≈⟨ +-congˡ $ distribʳ _ _ _ ⟩
         (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x) + (D→R d * (f ′) x) * (D→R d * (g ′) x)) ≈⟨ +-congˡ $ +-congˡ $ *-assoc _ _ _ ⟩
         (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x) + (D→R d * ((f ′) x * (D→R d * ((g ′) x))))) ≈⟨ +-congˡ $ +-congˡ $ *-congˡ $ sym $ *-assoc ((f ′) x) (D→R d) ((g ′) x) ⟩
         (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x) + (D→R d * (((f ′) x * D→R d) * (g ′) x))) ≈⟨ +-congˡ $ +-congˡ $ *-congˡ $ *-congʳ $ *-comm _ _ ⟩
-        (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x) + (D→R d * ((D→R d * (f ′) x) * (g ′) x))) ≈⟨ +-congˡ $ +-congˡ $ {!!} ⟩
+        (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x) + (D→R d * ((D→R d * (f ′) x) * (g ′) x))) ≈⟨ +-congˡ $ +-congˡ $ sym $ *-assoc _ _ _ ⟩
         (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x) + ((D→R d * (D→R d * (f ′) x)) * (g ′) x)) ≈⟨ +-congˡ $ +-congˡ $ *-congʳ $ sym $ *-assoc _ _ _ ⟩
         (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x) + ((D→R d * D→R d) * (f ′) x) * (g ′) x) ≈⟨ +-congˡ $ +-congˡ $ *-congʳ $ *-congʳ $ proj₂ d ⟩
         (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x) + (0# * (f ′) x) * (g ′) x) ≈⟨  +-congˡ $ +-congˡ $ *-congʳ $ zeroˡ _ ⟩
         (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x) + 0# * (g ′) x) ≈⟨ +-congˡ $ +-congˡ $ zeroˡ _ ⟩
         (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x) + 0#) ≈⟨ +-congˡ $ +-identityʳ _ ⟩
-        (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x)) ≈⟨ {!!} ⟩
+        (f x * g x + D→R d * (f ′) x * g x) + (f x * (D→R d * (g ′) x)) ≈⟨ +-congˡ $ sym $ *-assoc _ _ _ ⟩
+        (f x * g x + D→R d * (f ′) x * g x) + ((f x * D→R d) * (g ′) x) ≈⟨ +-congˡ $ *-congʳ $ *-comm _ _ ⟩
+        (f x * g x + D→R d * (f ′) x * g x) + (D→R d * f x * (g ′) x) ≈⟨ +-assoc _ _ _ ⟩
+        f x * g x + (D→R d * (f ′) x * g x + D→R d * f x * (g ′) x) ≈⟨ +-congˡ $ +-congʳ $ *-assoc _ _ _ ⟩
+        f x * g x + (D→R d * ((f ′) x * g x) + D→R d * f x * (g ′) x) ≈⟨ +-congˡ $ +-congˡ $ *-assoc _ _ _ ⟩ 
+        f x * g x + (D→R d * ((f ′) x * g x) + D→R d * (f x * (g ′) x)) ≈⟨ +-congˡ $ sym $ distribˡ _ _ _ ⟩
         (f ⊡ g) x + D→R d * (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x ≈⟨ {!!} ⟩
         gg d0 + D→R d * (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x ∎ 
     G : b ≈ (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x
