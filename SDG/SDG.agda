@@ -174,7 +174,7 @@ product-rule f g x =
         f x * g x + (D→R d * (f ′) x * g x + D→R d * f x * (g ′) x) ≈⟨ +-congˡ $ +-congʳ $ *-assoc _ _ _ ⟩
         f x * g x + (D→R d * ((f ′) x * g x) + D→R d * f x * (g ′) x) ≈⟨ +-congˡ $ +-congˡ $ *-assoc _ _ _ ⟩ 
         f x * g x + (D→R d * ((f ′) x * g x) + D→R d * (f x * (g ′) x)) ≈⟨ +-congˡ $ sym $ distribˡ _ _ _ ⟩
-        (f ⊡ g) x + D→R d * (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x ≈⟨ {!!} ⟩
+        (f ⊡ g) x + D→R d * (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x ≈⟨ +-congʳ $ ≈-cong (f ⊡ g) $ sym $ +-identityʳ _ ⟩
         gg d0 + D→R d * (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x ∎ 
     G : b ≈ (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x
     G = unique H
