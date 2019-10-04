@@ -105,6 +105,9 @@ taylors f x d = begin
 _⊞_ : (f : Rc → Rc) → (g : Rc → Rc) → (Rc → Rc)
 f ⊞ g = λ x → f x + g x
 
+import Algebra.Solver.Ring.AlmostCommutativeRing as ACR
+open import Algebra.Solver.Ring {!ACR.fromCommutativeSemiring ?!} {!R!} {!!} {!!}
+
 sum-rule : ∀ (f g : Rc → Rc) (x : Rc)  → ((f ⊞ g) ′) x ≈ ((f ′) ⊞ (g ′)) x
 sum-rule f g x = 
   begin 
@@ -121,14 +124,21 @@ sum-rule f g x =
    ggf′+g′ d =
      begin 
        (f (x + D→R d)) + (g (x + D→R d))           ≈⟨ +-congʳ $ taylors f x d ⟩ 
-       (f x + (D→R d * (f ′) x)) + (g (x + D→R d)) ≈⟨  +-congˡ $ taylors g x d ⟩ 
-       (f x + (D→R d * (f ′) x)) + (g x + (D→R d * (g ′) x)) ≈⟨ +-assoc _ _ _ ⟩
-       f x + ((D→R d * (f ′) x) + (g x + (D→R d * (g ′) x))) ≈⟨ +-congˡ $ sym $ +-assoc _ _ _ ⟩
-       f x + (((D→R d * (f ′) x) + g x) + (D→R d * (g ′) x)) ≈⟨ +-congˡ $ +-congʳ $ +-comm _ _ ⟩
-       f x + ((g x + (D→R d * (f ′) x)) + (D→R d * (g ′) x)) ≈⟨ +-congˡ $ +-assoc _ _ _ ⟩
-       f x + (g x + ((D→R d * (f ′) x) + (D→R d * (g ′) x))) ≈⟨ sym $ +-assoc _ _ _ ⟩
-       (f x + g x) + ((D→R d * (f ′) x) + (D→R d * (g ′) x)) ≈⟨ +-congˡ $ sym $ distribˡ _ _ _ ⟩
+       (f x + (D→R d * (f ′) x)) + (g (x + D→R d)) ≈⟨  +-congˡ $ taylors g x d ⟩
+       -- begin verbose
+       -- (f x + (D→R d * (f ′) x)) + (g x + (D→R d * (g ′) x)) ≈⟨ +-assoc _ _ _ ⟩
+       -- f x + ((D→R d * (f ′) x) + (g x + (D→R d * (g ′) x))) ≈⟨ +-congˡ $ sym $ +-assoc _ _ _ ⟩
+       -- f x + (((D→R d * (f ′) x) + g x) + (D→R d * (g ′) x)) ≈⟨ +-congˡ $ +-congʳ $ +-comm _ _ ⟩
+       -- f x + ((g x + (D→R d * (f ′) x)) + (D→R d * (g ′) x)) ≈⟨ +-congˡ $ +-assoc _ _ _ ⟩
+       -- f x + (g x + ((D→R d * (f ′) x) + (D→R d * (g ′) x))) ≈⟨ sym $ +-assoc _ _ _ ⟩
+       -- (f x + g x) + ((D→R d * (f ′) x) + (D→R d * (g ′) x)) ≈⟨ +-congˡ $ sym $ distribˡ _ _ _ ⟩
+       -- (f x + g x) + D→R d * ((f ′) x + (g ′) x) ≈⟨ refl ⟩
+       -- end verbose
+       -- begin ring
+       (f x + (D→R d * (f ′) x)) + (g x + (D→R d * (g ′) x))
+         ≈⟨ solve {!!} {!!} {!!} {!!} {!!} {!!} {!!}  ⟩
        (f x + g x) + D→R d * ((f ′) x + (g ′) x) ≈⟨ refl ⟩
+       -- end ring
        (f ⊞ g) x + D→R d * ((f ′) ⊞ (g ′)) x  ≈⟨ +-congʳ $ ≈-cong (f ⊞ g) $ sym $ +-identityʳ _  ⟩
        gg d0 + D→R d * ((f ′) ⊞ (g ′)) x ∎
    b≈ggf′+g′ : b ≈ ((f ′) ⊞ (g ′)) x
@@ -136,8 +146,6 @@ sum-rule f g x =
    
 _⊡_ : (f : Rc → Rc) → (g : Rc → Rc) → (Rc → Rc)
 f ⊡ g = λ x → f x * g x
-
-open import Algebra.Solver.Ring
 
 product-rule : ∀ (f g : Rc → Rc) (x : Rc) → ((f ⊡ g) ′) x ≈ (((f ′) ⊡ g) ⊞ (f ⊡ (g ′))) x
 product-rule f g x =
